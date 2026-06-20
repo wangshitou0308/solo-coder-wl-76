@@ -81,12 +81,14 @@ function SortableStep({ step, onEdit, onDelete }: SortableStepProps) {
       </div>
       <div className="flex items-center gap-1">
         <button
+          type="button"
           onClick={() => onEdit(step)}
           className="p-2 text-gray-400 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition-colors"
         >
           <Edit3 className="w-4 h-4" />
         </button>
         <button
+          type="button"
           onClick={() => onDelete(step.id)}
           className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
         >
@@ -102,7 +104,7 @@ export default function ModelEditor() {
   const navigate = useNavigate();
   const isEditing = id && id !== 'new';
   
-  const { models, steps, createModel, updateModel, fetchSteps, createStep, updateStep, deleteStep, reorderSteps } = useAppStore();
+  const { models, steps, loading, fetchModels, createModel, updateModel, fetchSteps, createStep, updateStep, deleteStep, reorderSteps } = useAppStore();
   
   const model = isEditing ? models.find(m => m.id === id) : null;
   const modelSteps = steps.filter(s => s.modelId === id);
@@ -138,9 +140,10 @@ export default function ModelEditor() {
 
   useEffect(() => {
     if (isEditing && id) {
+      fetchModels();
       fetchSteps(id);
     }
-  }, [isEditing, id, fetchSteps]);
+  }, [isEditing, id, fetchModels, fetchSteps]);
 
   useEffect(() => {
     if (model) {
@@ -229,6 +232,25 @@ export default function ModelEditor() {
       deleteStep(stepId);
     }
   };
+
+  if (isEditing && (loading || models.length === 0)) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500">加载中...</p>
+      </div>
+    );
+  }
+
+  if (isEditing && !model) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500">模型不存在</p>
+        <Link to="/models" className="text-primary-500 mt-4 inline-block">
+          返回模型库
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">

@@ -24,7 +24,7 @@ type TabType = 'info' | 'steps' | 'history';
 export default function ModelDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { models, steps, folds, paper, fetchSteps, fetchFolds, deleteModel, createFold, fetchPaper } = useAppStore();
+  const { models, steps, folds, paper, loading, fetchModels, fetchSteps, fetchFolds, deleteModel, createFold, fetchPaper } = useAppStore();
   const [activeTab, setActiveTab] = useState<TabType>('info');
   const [showFoldModal, setShowFoldModal] = useState(false);
   const [foldForm, setFoldForm] = useState({
@@ -44,11 +44,12 @@ export default function ModelDetail() {
 
   useEffect(() => {
     if (id) {
+      fetchModels();
       fetchSteps(id);
       fetchFolds(id);
       fetchPaper();
     }
-  }, [id, fetchSteps, fetchFolds, fetchPaper]);
+  }, [id, fetchModels, fetchSteps, fetchFolds, fetchPaper]);
 
   const handleDelete = () => {
     if (confirm('确定要删除这个模型吗？相关的步骤和记录也会被删除。')) {
@@ -110,6 +111,14 @@ export default function ModelDetail() {
   const getRatingStars = (rating: number) => {
     return '⭐'.repeat(rating);
   };
+
+  if (loading || models.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500">加载中...</p>
+      </div>
+    );
+  }
 
   if (!model) {
     return (

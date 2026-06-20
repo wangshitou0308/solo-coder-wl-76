@@ -14,7 +14,7 @@ import { cn } from '../../lib/utils';
 
 export default function StepViewer() {
   const { id } = useParams<{ id: string }>();
-  const { steps, models, fetchSteps } = useAppStore();
+  const { steps, models, loading, fetchModels, fetchSteps } = useAppStore();
   
   const model = models.find(m => m.id === id);
   const modelSteps = steps.filter(s => s.modelId === id);
@@ -26,9 +26,10 @@ export default function StepViewer() {
 
   useEffect(() => {
     if (id) {
+      fetchModels();
       fetchSteps(id);
     }
-  }, [id, fetchSteps]);
+  }, [id, fetchModels, fetchSteps]);
 
   useEffect(() => {
     if (isPlaying && modelSteps.length > 0) {
@@ -79,6 +80,24 @@ export default function StepViewer() {
 
   const step = modelSteps[currentStep];
   const progress = modelSteps.length > 0 ? ((currentStep + 1) / modelSteps.length) * 100 : 0;
+
+  if (loading && models.length === 0) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <Link
+          to={`/models/${id}`}
+          className="flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          返回模型详情
+        </Link>
+        
+        <div className="text-center py-24 bg-white rounded-2xl shadow-soft">
+          <p className="text-gray-500">加载中...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (modelSteps.length === 0) {
     return (
