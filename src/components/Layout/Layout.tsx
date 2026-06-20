@@ -6,13 +6,17 @@ import {
   Layers,
   BarChart3,
   Feather,
+  ImageIcon,
+  FolderKanban,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: '仪表盘' },
   { to: '/models', icon: BookOpen, label: '模型库' },
+  { to: '/portfolio', icon: ImageIcon, label: '作品集' },
   { to: '/folds', icon: Clock, label: '折叠记录' },
+  { to: '/collections', icon: FolderKanban, label: '合集管理' },
   { to: '/paper', icon: Layers, label: '纸张库存' },
   { to: '/statistics', icon: BarChart3, label: '统计中心' },
 ];
@@ -32,8 +36,8 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        
-        <nav className="flex-1 p-4 space-y-1">
+
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -48,22 +52,25 @@ export default function Layout() {
                 )
               }
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className="w-5 h-5 flex-shrink-0" />
               <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
-        
+
         <div className="p-4 border-t border-orange-100">
           <div className="bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl p-4">
-            <p className="text-sm font-medium text-gray-700">折纸小贴士</p>
-            <p className="text-xs text-gray-500 mt-1">
-              每次折叠前确保纸张平整，边角对齐是关键哦~
+            <p className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+              <Feather className="w-4 h-4 text-primary-500" />
+              折纸小贴士
+            </p>
+            <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
+              每次折叠前确保纸张平整，边角对齐是关键哦~ 记得标记难点步骤！
             </p>
           </div>
         </div>
       </aside>
-      
+
       <main className="flex-1 overflow-auto">
         <div className="p-8">
           <Outlet />
